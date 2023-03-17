@@ -25,7 +25,12 @@ export class Login extends Component {
         <header className="App-header">
           <img src={ logo } className="App-logo" alt="logo" />
           <p>SUA VEZ</p>
-          <form onSubmit={ this.handleSubmit }>
+          <form
+            onSubmit={ (e) => {
+              e.preventDefault();
+              this.handleSubmit();
+            } }
+          >
             <Input
               id="input-gravatar-email"
               type="email"
