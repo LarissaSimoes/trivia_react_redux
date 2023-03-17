@@ -30,6 +30,10 @@ describe('Testa tela de Login', () => {
         
         expect(screen.getByTestId('btn-play')).toBeEnabled(); 
     });
+
+    // it('Verifica se ao clicar no botão play...', () => {
+    //     testa handleSubmit()
+    // });
     
     // it('Verifica a existência do botão Settings', () => {
     //     expect(screen.getByTestId('btn-settings')).toBeInTheDocument();
@@ -39,4 +43,6 @@ describe('Testa tela de Login', () => {
     //     userEvent.click(screen.getByTestId('btn-settings'));
     //     expect(screen.getByTestId('settings-title')).toBeInTheDocument();
     // });
+
+    
 })
