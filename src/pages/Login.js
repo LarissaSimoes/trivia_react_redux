@@ -1,12 +1,14 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import Button from '../components/Button';
 import Input from '../components/Input';
+import { savePlayer } from '../redux/actions';
 import { saveToken } from '../utils/tokenFunctions';
 
-export class Login extends Component {
+class Login extends Component {
   state = {
-    email: '',
+    gravatarEmail: '',
     name: '',
   };
 
@@ -16,13 +18,15 @@ export class Login extends Component {
 
   handleSubmit = async (event) => {
     event.preventDefault();
+    const { history, dispatch } = this.props;
+    const { gravatarEmail, name } = this.state;
     await saveToken();
-    const { history } = this.props;
+    dispatch(savePlayer(gravatarEmail, name));
     history.push('/play');
   };
 
   render() {
-    const { email, name } = this.state;
+    const { gravatarEmail, name } = this.state;
     const { history } = this.props;
     return (
       <div>
@@ -30,8 +34,8 @@ export class Login extends Component {
           <Input
             id="input-gravatar-email"
             type="email"
-            name="email"
-            value={ email }
+            name="gravatarEmail"
+            value={ gravatarEmail }
             onChange={ this.handleChange }
             placeholder="Qual é o seu e-mail do gravatar?"
           />
@@ -47,7 +51,7 @@ export class Login extends Component {
             id="btn-play"
             type="submit"
             label="Play"
-            disabled={ email.length === 0 || name.length === 0 }
+            disabled={ gravatarEmail.length === 0 || name.length === 0 }
           />
         </form>
         <Button
@@ -62,4 +66,7 @@ export class Login extends Component {
 
 Login.propTypes = {
   history: PropTypes.shape({ push: PropTypes.func }).isRequired,
+  dispatch: PropTypes.func.isRequired,
 };
+
+export default connect()(Login);

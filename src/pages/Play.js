@@ -1,11 +1,14 @@
 import React, { Component } from 'react';
+import Header from '../components/Header';
 
-export default class Play extends Component {
+class Play extends Component {
   render() {
     return (
       <div>
-        <h1>Página Play</h1>
+        <Header />
       </div>
     );
   }
 }
+
+export default Play;
