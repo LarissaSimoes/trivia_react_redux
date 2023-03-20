@@ -1,5 +1,5 @@
 import React from 'react';
-import { screen } from '@testing-library/react';
+import { screen, waitFor } from '@testing-library/react';
 import {renderWithRouterAndRedux} from './helpers/renderWithRouterAndRedux';
 import App from '../App.js'
 import userEvent from '@testing-library/user-event';
@@ -30,10 +30,15 @@ describe('Testa tela de Login', () => {
         
         expect(screen.getByTestId('btn-play')).toBeEnabled(); 
     });
+    it('Verifica se ao preencher os campos e clicar no botão Play, a informação é salva no localStorage', async () => {
+        userEvent.type(screen.getByTestId('input-player-name'), 'Jogador Teste');
+        userEvent.type(screen.getByTestId('input-gravatar-email'), 'email@test.com');
+        userEvent.click(screen.getByTestId('btn-play'));
 
-    // it('Verifica se ao clicar no botão play...', () => {
-    //     testa handleSubmit()
-    // });
+        await waitFor(expect(window.localStorage.setItem).toHaveBeenCalledTimes(1));
+        
+         
+    });
     
     // it('Verifica a existência do botão Settings', () => {
     //     expect(screen.getByTestId('btn-settings')).toBeInTheDocument();
