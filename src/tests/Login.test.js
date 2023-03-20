@@ -4,12 +4,6 @@ import {renderWithRouterAndRedux} from './helpers/renderWithRouterAndRedux';
 import App from '../App.js'
 import userEvent from '@testing-library/user-event';
 
-const logar = () => {
-    userEvent.type(screen.getByTestId('input-player-name'), 'Jogador Teste');
-    userEvent.type(screen.getByTestId('input-gravatar-email'), 'email@test.com');
-    userEvent.click(screen.getByTestId('btn-play'));
-};
-
 describe('Testa tela de Login', () => {    
     beforeEach(() => {
         renderWithRouterAndRedux(<App />);
