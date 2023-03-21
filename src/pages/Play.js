@@ -12,8 +12,9 @@ class Play extends Component {
     counter: 0,
     isLoading: true,
     index: 0,
-    showNext: false,
     timer: 30,
+    showAlternatives: true,
+    showNext: false,
   };
 
   async componentDidMount() {
@@ -27,6 +28,21 @@ class Play extends Component {
       history.push('/');
     }
     this.setState({ questions: triviaData.results, isLoading: false });
+
+    // Implemnetação do Timer
+    const oneSecondInterval = 1000;
+    const intervalMax = 30000;
+
+    const interval = setInterval(() => {
+      this.setState((prevState) => ({
+        timer: prevState.timer - 1,
+      }));
+    }, oneSecondInterval);
+
+    setTimeout(() => {
+      this.setState({ showAlternatives: false });
+      clearInterval(interval);
+    }, intervalMax);
   }
 
   shuffleAnswers = (question) => {
@@ -88,7 +104,7 @@ class Play extends Component {
   };
 
   render() {
-    const { questions, counter, isLoading, index, showNext } = this.state;
+    const { questions, counter, isLoading, index, showAlternatives, timer, showNext } = this.state;
     const loadingText = (
       <h3>Carregando...</h3>
     );
@@ -106,6 +122,10 @@ class Play extends Component {
               <p data-testid="question-text">
                 { questions[counter].question }
               </p>
+              {
+                showAlternatives
+                && <p>{ timer }</p>
+              }
               <div data-testid="answer-options">
                 { this.shuffleAnswers(questions[counter]).map((answer, i) => {
                   if (answer === questions[counter].correct_answer) {
@@ -115,6 +135,7 @@ class Play extends Component {
                         id="correct-answer"
                         label={ answer }
                         onClick={ this.handleCorrectClick }
+                        disabled={ !showAlternatives }
 
                       />
                     );
@@ -125,6 +146,7 @@ class Play extends Component {
                       id={ `wrong-answer-${index}` }
                       label={ answer }
                       onClick={ this.handleWrongClick }
+                      disabled={ !showAlternatives }
                     />
                   );
                 })}
