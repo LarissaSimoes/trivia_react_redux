@@ -52,10 +52,17 @@ class Play extends Component {
   };
 
   handleNextClick = () => {
-    this.setState((current) => ({
-      counter: current.counter + 1,
-      showNext: false,
-    }));
+    const { counter } = this.state;
+    const { history } = this.props;
+    const maxQuestions = 4;
+    if (counter < maxQuestions) {
+      this.setState((current) => ({
+        counter: current.counter + 1,
+        showNext: false,
+      }));
+    } else {
+      history.push('/feedback');
+    }
   };
 
   render() {
