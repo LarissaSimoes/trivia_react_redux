@@ -1,8 +1,10 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import Button from '../components/Button';
 import Header from '../components/Header';
 import { TOKEN_KEY } from '../utils/tokenFunctions';
+import { ActionSetScore } from '../redux/actions';
 
 class Play extends Component {
   state = {
@@ -12,6 +14,7 @@ class Play extends Component {
     index: 0,
     timer: 30,
     showAlternatives: true,
+    showNext: false,
   };
 
   async componentDidMount() {
@@ -55,18 +58,53 @@ class Play extends Component {
   };
 
   handleCorrectClick = () => {
-    this.setState((current) => ({ counter: current.counter + 1 }));
+    const { questions, counter } = this.state;
+    const level = questions[counter].difficulty;
+    this.setState(() => ({
+      showNext: true,
+    }));
+    this.handleAddPoints(level);
   };
 
   handleWrongClick = () => {
     this.setState((current) => (
-      { counter: current.counter + 1,
-        index: current.index + 1 }
+      { index: current.index + 1,
+        showNext: true }
     ));
   };
 
+  handleNextClick = () => {
+    const { counter } = this.state;
+    const { history } = this.props;
+    const maxQuestions = 4;
+    if (counter < maxQuestions) {
+      this.setState((current) => ({
+        counter: current.counter + 1,
+        showNext: false,
+      }));
+    } else {
+      history.push('/feedback');
+    }
+  };
+
+  handleAddPoints = (level) => {
+    const { dispatch, score } = this.props;
+    const { timer } = this.state;
+    const minPoints = 10;
+    const hardLevel = 3;
+    const mediumLevel = 2;
+    const easyLevel = 1;
+    if (level === 'hard') {
+      return dispatch(ActionSetScore(score + (minPoints + (timer * hardLevel))));
+    }
+    if (level === 'medium') {
+      return dispatch(ActionSetScore(score + (minPoints + (timer * mediumLevel))));
+    }
+    return dispatch(ActionSetScore(score + (minPoints + (timer * easyLevel))));
+  };
+
   render() {
-    const { questions, counter, isLoading, index, showAlternatives, timer } = this.state;
+    const { questions, counter, isLoading, index, showAlternatives, timer, showNext } = this.state;
     const loadingText = (
       <h3>Carregando...</h3>
     );
@@ -115,6 +153,14 @@ class Play extends Component {
               </div>
             </div>
           )}
+        { showNext
+          ? (
+            <Button
+              id="btn-next"
+              label="Next"
+              onClick={ this.handleNextClick }
+            />
+          ) : ''}
       </div>
     );
   }
@@ -122,6 +168,14 @@ class Play extends Component {
 
 Play.propTypes = {
   history: PropTypes.shape({ push: PropTypes.func }).isRequired,
+  dispatch: PropTypes.func.isRequired,
+  score: PropTypes.number.isRequired,
 };
 
-export default Play;
+function mapStateToProps(state) {
+  return {
+    score: state.player.score,
+  };
+}
+
+export default connect(mapStateToProps)(Play);
