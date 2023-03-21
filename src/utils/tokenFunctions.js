@@ -1,5 +1,5 @@
 const tokenEndpoint = 'https://opentdb.com/api_token.php?command=request';
-const TOKEN_KEY = 'token';
+export const TOKEN_KEY = 'token';
 
 async function getToken() {
   const response = await fetch(tokenEndpoint);
