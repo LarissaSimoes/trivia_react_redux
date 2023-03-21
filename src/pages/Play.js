@@ -5,65 +5,79 @@ import Header from '../components/Header';
 import { TOKEN_KEY } from '../utils/tokenFunctions';
 
 class Play extends Component {
-  state = { questions: [] };
+  state = {
+    questions: [],
+    counter: 0,
+    isLoading: false,
+  };
 
   async componentDidMount() {
+    this.setState({ isLoading: true });
     const token = localStorage.getItem(TOKEN_KEY);
-    if (token) {
-      const endpointTrivia = `https://opentdb.com/api.php?amount=5&token=${token}`;
-      const response = await fetch(endpointTrivia);
-      const triviaData = await response.json();
-      if (triviaData.response_code !== 0) {
-        const { history } = this.props;
-        localStorage.removeItem(TOKEN_KEY);
-        history.push('/');
-      }
-      this.setState({ questions: triviaData.results });
+    const endpointTrivia = `https://opentdb.com/api.php?amount=5&token=${token}`;
+    const response = await fetch(endpointTrivia);
+    const triviaData = await response.json();
+    if (triviaData.response_code !== 0) {
+      const { history } = this.props;
+      localStorage.removeItem(TOKEN_KEY);
+      history.push('/');
     }
+    this.setState({ questions: triviaData.results, isLoading: false });
   }
 
-  render() {
-    const { questions } = this.state;
-    if (questions.length > 0) {
-      const correctAnswer = questions[0].correct_answer;
-      const incorrectAnswers = questions[0].incorrect_answers;
-      const allAnswers = [...incorrectAnswers, correctAnswer];
-      console.log(allAnswers);
-      const shuffledAnswers = allAnswers
-        .map((value) => ({ value, sort: Math.random() }))
-        .sort((a, b) => a.sort - b.sort)
-        .map(({ value }) => value);
+  shuffleAnswers = (question) => {
+    const correctAnswer = question.correct_answer;
+    const incorrectAnswers = question.incorrect_answers;
+    const allAnswers = [...incorrectAnswers, correctAnswer];
+    console.log(allAnswers);
+    const shuffledAnswers = allAnswers
+      .map((value) => ({ value, sort: Math.random() }))
+      .sort((a, b) => a.sort - b.sort)
+      .map(({ value }) => value);
+    return shuffledAnswers;
+  };
 
-      const xablau = shuffledAnswers.map((question, index) => {
-        if (question === questions[0].correct_answer) {
-          return (
-            <Button
-              key={ question }
-              data-testid="correct-answer"
-              label={ question }
-            />
-          );
-        }
-        return (
-          <Button
-            key={ question }
-            data-testid={ `wrong-answer-${index}` }
-            label={ question }
-          />
-        );
-      });
-      console.log(shuffledAnswers);
-    }
+  render() {
+    const { questions, counter, isLoading } = this.state;
+    const loadingText = (
+      <h3>Carregando...</h3>
+    );
 
     return (
       <div>
         <Header />
-        <h3 data-testid="question-category">
-          {questions.length > 0 && questions[0].category}
-        </h3>
-        <p data-testid="question-text">
-          {questions.length > 0 && questions[0].question}
-        </p>
+        { isLoading
+          ? loadingText
+          : (
+            <div>
+              <h3 data-testid="question-category">
+                { questions[counter].category }
+              </h3>
+              <p data-testid="question-text">
+                { questions[counter].question }
+              </p>
+              <div>
+                { this.shuffleAnswers(questions[counter]).map((answer, i) => {
+                  if (answer === questions[counter].correct_answer) {
+                    return (
+                      <Button
+                        key={ i }
+                        data-testid="correct-answer"
+                        label={ answer }
+                      />
+                    );
+                  }
+                  return (
+                    <Button
+                      key={ i }
+                      data-testid={ `wrong-answer-${index}` }
+                      label={ answer }
+                    />
+                  );
+                })}
+              </div>
+            </div>
+          )}
       </div>
     );
   }
