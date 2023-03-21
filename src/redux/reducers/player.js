@@ -3,6 +3,7 @@ import { SAVE_PLAYER } from '../actions';
 const INITIAL_STATE = {
   gravatarEmail: '',
   name: '',
+  score: 0,
 };
 
 export const player = (state = INITIAL_STATE, action) => {
