@@ -67,13 +67,13 @@ class Play extends Component {
               <p data-testid="question-text">
                 { questions[counter].question }
               </p>
-              <div>
+              <div data-testid="answer-options">
                 { this.shuffleAnswers(questions[counter]).map((answer, i) => {
                   if (answer === questions[counter].correct_answer) {
                     return (
                       <Button
                         key={ i }
-                        data-testid="correct-answer"
+                        id="correct-answer"
                         label={ answer }
                         onClick={ this.handleCorrectClick }
 
@@ -83,7 +83,7 @@ class Play extends Component {
                   return (
                     <Button
                       key={ i }
-                      data-testid={ `wrong-answer-${index}` }
+                      id={ `wrong-answer-${index}` }
                       label={ answer }
                       onClick={ this.handleWrongClick }
                     />
