@@ -10,6 +10,7 @@ class Play extends Component {
     counter: 0,
     isLoading: true,
     index: 0,
+    showNext: false,
   };
 
   async componentDidMount() {
@@ -38,18 +39,27 @@ class Play extends Component {
   };
 
   handleCorrectClick = () => {
-    this.setState((current) => ({ counter: current.counter + 1 }));
+    this.setState(() => ({
+      showNext: true,
+    }));
   };
 
   handleWrongClick = () => {
     this.setState((current) => (
-      { counter: current.counter + 1,
-        index: current.index + 1 }
+      { index: current.index + 1,
+        showNext: true }
     ));
   };
 
+  handleNextClick = () => {
+    this.setState((current) => ({
+      counter: current.counter + 1,
+      showNext: false,
+    }));
+  };
+
   render() {
-    const { questions, counter, isLoading, index } = this.state;
+    const { questions, counter, isLoading, index, showNext } = this.state;
     const loadingText = (
       <h3>Carregando...</h3>
     );
@@ -92,6 +102,14 @@ class Play extends Component {
               </div>
             </div>
           )}
+        { showNext
+          ? (
+            <Button
+              id="btn-next"
+              label="Next"
+              onClick={ this.handleNextClick }
+            />
+          ) : ''}
       </div>
     );
   }
