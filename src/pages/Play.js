@@ -1,8 +1,10 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import Button from '../components/Button';
 import Header from '../components/Header';
 import { TOKEN_KEY } from '../utils/tokenFunctions';
+import { ActionSetScore } from '../redux/actions';
 
 class Play extends Component {
   state = {
@@ -11,6 +13,7 @@ class Play extends Component {
     isLoading: true,
     index: 0,
     showNext: false,
+    timer: 30,
   };
 
   async componentDidMount() {
@@ -39,9 +42,12 @@ class Play extends Component {
   };
 
   handleCorrectClick = () => {
+    const { questions, counter } = this.state;
+    const level = questions[counter].difficulty;
     this.setState(() => ({
       showNext: true,
     }));
+    this.handleAddPoints(level);
   };
 
   handleWrongClick = () => {
@@ -63,6 +69,22 @@ class Play extends Component {
     } else {
       history.push('/feedback');
     }
+  };
+
+  handleAddPoints = (level) => {
+    const { dispatch, score } = this.props;
+    const { timer } = this.state;
+    const minPoints = 10;
+    const hardLevel = 3;
+    const mediumLevel = 2;
+    const easyLevel = 1;
+    if (level === 'hard') {
+      return dispatch(ActionSetScore(score + (minPoints + (timer * hardLevel))));
+    }
+    if (level === 'medium') {
+      return dispatch(ActionSetScore(score + (minPoints + (timer * mediumLevel))));
+    }
+    return dispatch(ActionSetScore(score + (minPoints + (timer * easyLevel))));
   };
 
   render() {
@@ -124,6 +146,14 @@ class Play extends Component {
 
 Play.propTypes = {
   history: PropTypes.shape({ push: PropTypes.func }).isRequired,
+  dispatch: PropTypes.func.isRequired,
+  score: PropTypes.number.isRequired,
 };
 
-export default Play;
+function mapStateToProps(state) {
+  return {
+    score: state.player.score,
+  };
+}
+
+export default connect(mapStateToProps)(Play);
