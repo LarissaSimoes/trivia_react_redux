@@ -104,7 +104,9 @@ class Play extends Component {
   };
 
   render() {
-    const { questions, counter, isLoading, index, showAlternatives, timer, showNext } = this.state;
+    const {
+      questions, counter, isLoading, index, showAlternatives, timer, showNext,
+    } = this.state;
     const loadingText = (
       <h3>Carregando...</h3>
     );
