@@ -8,11 +8,11 @@ class Play extends Component {
   state = {
     questions: [],
     counter: 0,
-    isLoading: false,
+    isLoading: true,
+    index: 0,
   };
 
   async componentDidMount() {
-    this.setState({ isLoading: true });
     const token = localStorage.getItem(TOKEN_KEY);
     const endpointTrivia = `https://opentdb.com/api.php?amount=5&token=${token}`;
     const response = await fetch(endpointTrivia);
@@ -37,8 +37,19 @@ class Play extends Component {
     return shuffledAnswers;
   };
 
+  handleCorrectClick = () => {
+    this.setState((current) => ({ counter: current.counter + 1 }));
+  };
+
+  handleWrongClick = () => {
+    this.setState((current) => (
+      { counter: current.counter + 1,
+        index: current.index + 1 }
+    ));
+  };
+
   render() {
-    const { questions, counter, isLoading } = this.state;
+    const { questions, counter, isLoading, index } = this.state;
     const loadingText = (
       <h3>Carregando...</h3>
     );
@@ -64,6 +75,8 @@ class Play extends Component {
                         key={ i }
                         data-testid="correct-answer"
                         label={ answer }
+                        onClick={ this.handleCorrectClick }
+
                       />
                     );
                   }
@@ -72,6 +85,7 @@ class Play extends Component {
                       key={ i }
                       data-testid={ `wrong-answer-${index}` }
                       label={ answer }
+                      onClick={ this.handleWrongClick }
                     />
                   );
                 })}
