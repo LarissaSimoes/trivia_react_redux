@@ -2,10 +2,11 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import Header from '../components/Header';
+import Button from '../components/Button';
 
 class Feedback extends Component {
   render() {
-    const { score } = this.props;
+    const { score, history } = this.props;
     return (
       <div>
         <Header />
@@ -13,6 +14,11 @@ class Feedback extends Component {
         <h3>{score}</h3>
         {/* Adicionando esta tag a seguir para passar no requisito 11, mas só será implementada no 13 */}
         <p data-testid="feedback-text" />
+        <Button
+          id="btn-play-again"
+          label="play-again"
+          onClick={ () => history.push('/') }
+        />
       </div>
     );
   }
@@ -20,6 +26,7 @@ class Feedback extends Component {
 
 Feedback.propTypes = {
   score: PropTypes.number.isRequired,
+  history: PropTypes.shape({ push: PropTypes.func }).isRequired,
 };
 
 function mapStateToProps(state) {
