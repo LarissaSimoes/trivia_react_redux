@@ -19,6 +19,11 @@ class Feedback extends Component {
           label="play-again"
           onClick={ () => history.push('/') }
         />
+        <Button
+          id="btn-ranking"
+          label="Tela de ranking"
+          onClick={ () => history.push('/ranking') }
+        />
       </div>
     );
   }
