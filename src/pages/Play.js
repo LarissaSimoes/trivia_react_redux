@@ -52,7 +52,10 @@ class Play extends Component {
     }, oneSecondInterval);
 
     setTimeout(() => {
-      this.setState({ showAlternatives: false });
+      this.setState({
+        showAlternatives: false,
+        showNext: true,
+      });
       clearInterval(interval);
     }, intervalMax);
   }
