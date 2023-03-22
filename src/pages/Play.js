@@ -3,15 +3,14 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import Button from '../components/Button';
 import Header from '../components/Header';
-import { TOKEN_KEY } from '../utils/tokenFunctions';
 import { ActionSetScore } from '../redux/actions';
+import { TOKEN_KEY } from '../utils/tokenFunctions';
 
 class Play extends Component {
   state = {
     questions: [],
     counter: 0,
     isLoading: true,
-    index: 0,
     timer: 30,
     showAlternatives: true,
     showNext: false,
@@ -60,17 +59,14 @@ class Play extends Component {
   handleCorrectClick = () => {
     const { questions, counter } = this.state;
     const level = questions[counter].difficulty;
-    this.setState(() => ({
-      showNext: true,
-    }));
+    const correctAnswerElement = document.querySelector('#correct-answer');
+    correctAnswerElement.style.border = '3px solid rgb(6, 240, 15)';
+    this.setState(() => ({ showNext: true }));
     this.handleAddPoints(level);
   };
 
   handleWrongClick = () => {
-    this.setState((current) => (
-      { index: current.index + 1,
-        showNext: true }
-    ));
+    this.setState(({ showNext: true }));
   };
 
   handleNextClick = () => {
@@ -105,7 +101,7 @@ class Play extends Component {
 
   render() {
     const {
-      questions, counter, isLoading, index, showAlternatives, timer, showNext,
+      questions, counter, isLoading, showAlternatives, timer, showNext,
     } = this.state;
     const loadingText = (
       <h3>Carregando...</h3>
@@ -145,7 +141,7 @@ class Play extends Component {
                   return (
                     <Button
                       key={ i }
-                      id={ `wrong-answer-${index}` }
+                      id={ `wrong-answer-${i}` }
                       label={ answer }
                       onClick={ this.handleWrongClick }
                       disabled={ !showAlternatives }
