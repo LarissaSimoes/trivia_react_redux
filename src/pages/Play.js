@@ -26,38 +26,38 @@ class Play extends Component {
       const { history } = this.props;
       localStorage.removeItem(TOKEN_KEY);
       history.push('/');
+    } else {
+      const allAnswers = [
+        this.shuffleAnswers(triviaData.results[0]),
+        this.shuffleAnswers(triviaData.results[1]),
+        this.shuffleAnswers(triviaData.results[2]),
+        this.shuffleAnswers(triviaData.results[3]),
+        this.shuffleAnswers(triviaData.results[4]),
+      ];
+
+      this.setState({ allAnswers });
+
+      console.log(allAnswers);
+      this.setState({ questions: triviaData.results, isLoading: false });
+
+      // Implemnetação do Timer
+      const oneSecondInterval = 1000;
+      const intervalMax = 30000;
+
+      const interval = setInterval(() => {
+        this.setState((prevState) => ({
+          timer: prevState.timer - 1,
+        }));
+      }, oneSecondInterval);
+
+      setTimeout(() => {
+        this.setState({
+          showAlternatives: false,
+          showNext: true,
+        });
+        clearInterval(interval);
+      }, intervalMax);
     }
-
-    const allAnswers = [
-      this.shuffleAnswers(triviaData.results[0]),
-      this.shuffleAnswers(triviaData.results[1]),
-      this.shuffleAnswers(triviaData.results[2]),
-      this.shuffleAnswers(triviaData.results[3]),
-      this.shuffleAnswers(triviaData.results[4]),
-    ];
-
-    this.setState({ allAnswers });
-
-    console.log(allAnswers);
-    this.setState({ questions: triviaData.results, isLoading: false });
-
-    // Implemnetação do Timer
-    const oneSecondInterval = 1000;
-    const intervalMax = 30000;
-
-    const interval = setInterval(() => {
-      this.setState((prevState) => ({
-        timer: prevState.timer - 1,
-      }));
-    }, oneSecondInterval);
-
-    setTimeout(() => {
-      this.setState({
-        showAlternatives: false,
-        showNext: true,
-      });
-      clearInterval(interval);
-    }, intervalMax);
   }
 
   shuffleAnswers = (question) => {
