@@ -6,7 +6,7 @@ class Button extends Component {
     const { label, id, onClick, type, moreClasses, disabled } = this.props;
     return (
       <button
-        className={ `button ${moreClasses}` }
+        className={ moreClasses }
         data-testid={ id }
         id={ id }
         type={ type }

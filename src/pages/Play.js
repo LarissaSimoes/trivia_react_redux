@@ -74,14 +74,14 @@ class Play extends Component {
   handleCorrectClick = () => {
     const { questions, counter } = this.state;
     const level = questions[counter].difficulty;
-    const correctAnswerElement = document.querySelector('#correct-answer');
-    correctAnswerElement.style.border = '3px solid rgb(6, 240, 15)';
     this.setState(() => ({ showNext: true }));
     this.handleAddPoints(level);
+    this.colorAnswers();
   };
 
   handleWrongClick = () => {
-    this.setState(({ showNext: true }));
+    this.setState(() => ({ showNext: true }));
+    this.colorAnswers();
   };
 
   handleNextClick = () => {
@@ -93,7 +93,9 @@ class Play extends Component {
         counter: current.counter + 1,
         showNext: false,
         timer: 30,
+        showAlternatives: true,
       }));
+      this.resetColorAnswers();
     } else {
       history.push('/feedback');
     }
@@ -113,6 +115,24 @@ class Play extends Component {
       return dispatch(ActionSetScore(score + (minPoints + (timer * mediumLevel))));
     }
     return dispatch(ActionSetScore(score + (minPoints + (timer * easyLevel))));
+  };
+
+  colorAnswers = () => {
+    const wrongColor = '3px solid red';
+    const correctColor = '3px solid rgb(6, 240, 15)';
+    const correctAnswerElement = document.querySelector('#correct-answer');
+    const wrongAnswerElement = document.querySelectorAll('.wrong-answer');
+    correctAnswerElement.style.border = correctColor;
+    wrongAnswerElement.forEach((element) => { element.style.border = wrongColor; });
+  };
+
+  resetColorAnswers = () => {
+    const wrongColor = '';
+    const correctColor = '';
+    const correctAnswerElement = document.querySelector('#correct-answer');
+    const wrongAnswerElement = document.querySelectorAll('.wrong-answer');
+    correctAnswerElement.style.border = correctColor;
+    wrongAnswerElement.forEach((element) => { element.style.border = wrongColor; });
   };
 
   render() {
@@ -150,7 +170,6 @@ class Play extends Component {
                         label={ answer }
                         onClick={ this.handleCorrectClick }
                         disabled={ !showAlternatives }
-
                       />
                     );
                   }
@@ -161,6 +180,7 @@ class Play extends Component {
                       label={ answer }
                       onClick={ this.handleWrongClick }
                       disabled={ !showAlternatives }
+                      moreClasses="wrong-answer"
                     />
                   );
                 })}
