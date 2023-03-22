@@ -1,31 +1,56 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
 import Header from '../components/Header';
 
 class Feedback extends Component {
+  state = {
+    message: '',
+  };
+
+  componentDidMount() {
+    this.messageFilter();
+  }
+
+  messageFilter = () => {
+    const { player: { assertions } } = this.props;
+    const fail = 'Could be better...';
+    const wins = 'Well Done!';
+    const bound = 2;
+    if (assertions <= bound) {
+      this.setState({
+        message: fail,
+      });
+    } if (assertions > bound) {
+      this.setState({
+        message: wins,
+      });
+    }
+  };
+
   render() {
-    const { score } = this.props;
+    const { message } = this.state;
+    const { player } = this.props;
+    const { score, assertions } = player;
     return (
       <div>
         <Header />
-        <h1>Placar</h1>
-        <h3>{score}</h3>
-        {/* Adicionando esta tag a seguir para passar no requisito 11, mas só será implementada no 13 */}
-        <p data-testid="feedback-text" />
+        <h1 data-testid="feedback-text">{message}</h1>
+        <h3 data-testid="feedback-total-score">{score}</h3>
+        <h3 data-testid="feedback-total-question">{assertions}</h3>
       </div>
     );
   }
 }
+const mapStateToProps = (state) => ({
+  ...state,
+});
 
 Feedback.propTypes = {
-  score: PropTypes.number.isRequired,
+  player: PropTypes.shape({
+    assertions: PropTypes.number,
+    score: PropTypes.number,
+  }).isRequired,
 };
-
-function mapStateToProps(state) {
-  return {
-    score: state.player.score,
-  };
-}
 
 export default connect(mapStateToProps)(Feedback);
