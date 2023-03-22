@@ -30,11 +30,10 @@ class Feedback extends Component {
   };
 
   render() {
-
     const { message } = this.state;
-    const { player, score, history } = this.props;
-    const { score, assertions } = player;
-    
+    const { player, history } = this.props;
+    const { assertions, score } = player;
+
     return (
       <div>
         <Header />
