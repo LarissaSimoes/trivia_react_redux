@@ -5,8 +5,9 @@ import { connect } from 'react-redux';
 
 class Header extends Component {
   render() {
-    const { gravatarEmail, name } = this.props;
+    const { gravatarEmail, name, score } = this.props;
     const emailToString = md5(gravatarEmail).toString();
+    console.log(score);
     return (
       <div>
         <img
@@ -23,7 +24,7 @@ class Header extends Component {
         <h2
           data-testid="header-score"
         >
-          0
+          { score }
         </h2>
       </div>
     );
@@ -31,6 +32,7 @@ class Header extends Component {
 }
 
 Header.propTypes = {
+  score: PropTypes.number.isRequired,
   name: PropTypes.string.isRequired,
   gravatarEmail: PropTypes.string.isRequired,
 };
@@ -39,6 +41,7 @@ function mapStateToProps(state) {
   return {
     name: state.player.name,
     gravatarEmail: state.player.gravatarEmail,
+    score: state.player.score,
   };
 }
 

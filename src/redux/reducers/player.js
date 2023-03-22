@@ -19,10 +19,13 @@ export const player = (state = INITIAL_STATE, action) => {
   case SET_SCORE: {
     return {
       ...state,
-      score: action.score,
+      score: state.score + action.score,
+      assertions: state.assertions + 1,
     };
   }
   default:
     return state;
   }
 };
+
+export default player;
