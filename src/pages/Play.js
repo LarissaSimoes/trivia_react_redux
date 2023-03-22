@@ -9,6 +9,7 @@ import { TOKEN_KEY } from '../utils/tokenFunctions';
 class Play extends Component {
   state = {
     questions: [],
+    allAnswers: [],
     counter: 0,
     isLoading: true,
     timer: 30,
@@ -25,30 +26,44 @@ class Play extends Component {
       const { history } = this.props;
       localStorage.removeItem(TOKEN_KEY);
       history.push('/');
+    } else {
+      const allAnswers = [
+        this.shuffleAnswers(triviaData.results[0]),
+        this.shuffleAnswers(triviaData.results[1]),
+        this.shuffleAnswers(triviaData.results[2]),
+        this.shuffleAnswers(triviaData.results[3]),
+        this.shuffleAnswers(triviaData.results[4]),
+      ];
+
+      this.setState({ allAnswers });
+
+      console.log(allAnswers);
+      this.setState({ questions: triviaData.results, isLoading: false });
+
+      // Implemnetação do Timer
+      const oneSecondInterval = 1000;
+      const intervalMax = 30000;
+
+      const interval = setInterval(() => {
+        this.setState((prevState) => ({
+          timer: prevState.timer - 1,
+        }));
+      }, oneSecondInterval);
+
+      setTimeout(() => {
+        this.setState({
+          showAlternatives: false,
+          showNext: true,
+        });
+        clearInterval(interval);
+      }, intervalMax);
     }
-    this.setState({ questions: triviaData.results, isLoading: false });
-
-    // Implemnetação do Timer
-    const oneSecondInterval = 1000;
-    const intervalMax = 30000;
-
-    const interval = setInterval(() => {
-      this.setState((prevState) => ({
-        timer: prevState.timer - 1,
-      }));
-    }, oneSecondInterval);
-
-    setTimeout(() => {
-      this.setState({ showAlternatives: false });
-      clearInterval(interval);
-    }, intervalMax);
   }
 
   shuffleAnswers = (question) => {
     const correctAnswer = question.correct_answer;
     const incorrectAnswers = question.incorrect_answers;
     const allAnswers = [...incorrectAnswers, correctAnswer];
-    console.log(allAnswers);
     const shuffledAnswers = allAnswers
       .map((value) => ({ value, sort: Math.random() }))
       .sort((a, b) => a.sort - b.sort)
@@ -77,6 +92,7 @@ class Play extends Component {
       this.setState((current) => ({
         counter: current.counter + 1,
         showNext: false,
+        timer: 30,
       }));
     } else {
       history.push('/feedback');
@@ -101,7 +117,7 @@ class Play extends Component {
 
   render() {
     const {
-      questions, counter, isLoading, showAlternatives, timer, showNext,
+      questions, counter, isLoading, showAlternatives, timer, showNext, allAnswers,
     } = this.state;
     const loadingText = (
       <h3>Carregando...</h3>
@@ -125,7 +141,7 @@ class Play extends Component {
                 && <p>{ timer }</p>
               }
               <div data-testid="answer-options">
-                { this.shuffleAnswers(questions[counter]).map((answer, i) => {
+                { allAnswers[counter].map((answer, i) => {
                   if (answer === questions[counter].correct_answer) {
                     return (
                       <Button
