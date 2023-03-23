@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import Button from '../components/Button';
 import Input from '../components/Input';
-import { savePlayer } from '../redux/actions';
+import { savePlayer, actionPlayerData } from '../redux/actions';
 import { saveToken } from '../utils/tokenFunctions';
 
 class Login extends Component {
@@ -11,6 +11,17 @@ class Login extends Component {
     gravatarEmail: '',
     name: '',
   };
+
+  componentDidMount() {
+    const { dispatch } = this.props;
+    const playerData = {
+      name: '',
+      assertions: 0,
+      score: 0,
+      gravatarEmail: '',
+    };
+    dispatch(actionPlayerData(playerData));
+  }
 
   handleChange = ({ target }) => {
     this.setState({ [target.name]: target.value });

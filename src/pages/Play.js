@@ -95,6 +95,7 @@ class Play extends Component {
         timer: 30,
       }));
     } else {
+      console.log('entrei');
       history.push('/feedback');
     }
   };

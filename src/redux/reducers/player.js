@@ -1,4 +1,4 @@
-import { SAVE_PLAYER, SET_SCORE } from '../actions';
+import { SAVE_PLAYER, SET_PLAYER_DATA, SET_SCORE } from '../actions';
 
 const INITIAL_STATE = {
   name: '',
@@ -21,6 +21,12 @@ export const player = (state = INITIAL_STATE, action) => {
       ...state,
       score: state.score + action.score,
       assertions: state.assertions + 1,
+    };
+  }
+  case SET_PLAYER_DATA: {
+    return {
+      ...state,
+      ...action.payload,
     };
   }
   default:
