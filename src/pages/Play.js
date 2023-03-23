@@ -97,6 +97,7 @@ class Play extends Component {
       }));
       this.resetColorAnswers();
     } else {
+      console.log('entrei');
       history.push('/feedback');
     }
   };

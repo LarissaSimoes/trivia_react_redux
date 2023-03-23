@@ -13,6 +13,18 @@ class Feedback extends Component {
     this.messageFilter();
   }
 
+  resetData = () => {
+    const { history } = this.props;
+    history.push('/');
+  };
+
+  addToStorage = () => {
+    const { player } = this.props;
+    const { score, name } = player;
+    const currentRanking = JSON.parse(localStorage.getItem('ranking')) || [];
+    localStorage.setItem('ranking', JSON.stringify([...currentRanking, { score, name }]));
+  };
+
   messageFilter = () => {
     const { player: { assertions } } = this.props;
     const fail = 'Could be better...';
@@ -21,11 +33,11 @@ class Feedback extends Component {
     if (assertions <= bound) {
       this.setState({
         message: fail,
-      });
+      }, this.addToStorage());
     } if (assertions > bound) {
       this.setState({
         message: wins,
-      });
+      }, this.addToStorage());
     }
   };
 
@@ -45,7 +57,8 @@ class Feedback extends Component {
         <Button
           id="btn-play-again"
           label="play-again"
-          onClick={ () => history.push('/') }
+          // onClick={ () => history.push('/') }
+          onClick={ this.resetData }
         />
         <Button
           id="btn-ranking"
@@ -62,11 +75,13 @@ const mapStateToProps = (state) => ({
 });
 
 Feedback.propTypes = {
-  player: PropTypes.shape({
-    assertions: PropTypes.number,
-    score: PropTypes.number,
-  }).isRequired,
-  history: PropTypes.shape({ push: PropTypes.func }).isRequired,
-};
+  name: PropTypes.string,
+  assertions: PropTypes.number,
+  score: PropTypes.number,
+  gravatarEmail: PropTypes.string,
+  history: PropTypes.shape({
+    push: PropTypes.func,
+  }),
+}.isRequired;
 
 export default connect(mapStateToProps)(Feedback);
